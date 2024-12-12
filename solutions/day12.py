@@ -38,7 +38,7 @@ class Solution(SolutionBase):
         grid, coords_by_type = self.parse_data(data)
         types = set(coords_by_type.keys())
 
-        def get_side_count(grid, coord):
+        def get_connected_count(grid, coord):
             rows, cols = len(grid), len(grid[0])
             y, x = coord
             count = 0
@@ -57,11 +57,11 @@ class Solution(SolutionBase):
                 curr = coords.pop()
                 curr_group = self.get_curr_group(grid, curr)
                 coords -= curr_group
-                side_count = {}
+                connected_count = {}  # count of connected sides for each cell in the group
                 for coord in curr_group:
-                    side_count[coord] = get_side_count(grid, coord)
+                    connected_count[coord] = get_connected_count(grid, coord)
 
-                price = len(curr_group) * (len(curr_group) * 4 - sum(side_count.values()))
+                price = len(curr_group) * (len(curr_group) * 4 - sum(connected_count.values()))
                 prices[_type] += price
 
         return sum(prices.values())
