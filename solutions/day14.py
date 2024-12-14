@@ -20,6 +20,7 @@ class Solution(SolutionBase):
 
         quads = [0, 0, 0, 0]
 
+        # there’s no need to loop 100 times
         for i in range(len(robots)):
             (x, y), (vx, vy) = robots[i]
             x = (x + 100 * (vx + width)) % width
@@ -34,7 +35,18 @@ class Solution(SolutionBase):
         return quads[0] * quads[1] * quads[2] * quads[3]
 
     def part2(self, data):
+        """
+        notes:
 
+        I initially printed every single frame but then realized there was a
+        10403-frame pattern. Within that pattern, I noticed a sus frame that
+        appears every 101 frames, where a bunch of robots clustering into a
+        vertical thick line. I focused on those frames and eventually found
+        the answer.
+
+        Then, I saw someone mention that no robot stands in the same spot when
+        they form the Christmas tree. That completely blew my mind...
+        """
         robots = []
         for line in data:
             a, b = line.split(" ")
