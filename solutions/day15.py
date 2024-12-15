@@ -33,8 +33,8 @@ class Solution(SolutionBase):
                 edges, adjs = self.get_adjs_and_edges(grid, pos, move, part)
                 blocked = 0
                 dy, dx = self.dirs[move]
-                for cell in edges:
-                    ny, nx = (cell[0] + dy, cell[1] + dx)
+                for box in edges:
+                    ny, nx = (box[0] + dy, box[1] + dx)
                     if grid[ny][nx] == "#":
                         blocked += 1
                 if blocked == 0:
@@ -75,34 +75,38 @@ class Solution(SolutionBase):
 
             return edges, adjs - {(pos[0], pos[1])}
 
-    def update_grid(self, grid, visited, move):
-        cells = []
+    def update_grid(self, grid, adjs, move):
+        sorted_coords = []
+
+        # sort coords from the edge to the robot's position
         match move:
             case "^":
-                cells = sorted(visited, key=lambda x: x[0])
+                sorted_coords = sorted(adjs, key=lambda x: x[0])
             case "v":
-                cells = sorted(visited, key=lambda x: x[0], reverse=True)
+                sorted_coords = sorted(adjs, key=lambda x: x[0], reverse=True)
             case "<":
-                cells = sorted(visited, key=lambda x: x[1])
+                sorted_coords = sorted(adjs, key=lambda x: x[1])
             case ">":
-                cells = sorted(visited, key=lambda x: x[1], reverse=True)
+                sorted_coords = sorted(adjs, key=lambda x: x[1], reverse=True)
+
         dy, dx = self.dirs[move]
-        for cell in cells:
-            y, x = cell
+        for coord in sorted_coords:
+            y, x = coord
             ny, nx = y + dy, x + dx
             grid[ny][nx] = grid[y][x]
             grid[y][x] = "."
+
         return grid
 
     def get_coords_sum(self, grid, part=1):
-        target = "[" if part == 2 else "O"
+        box = "[" if part == 2 else "O"
         rows, cols = len(grid), len(grid[0])
         # _sum = 0
         # for r in range(rows):
         #     for c in range(cols):
         #         if grid[r][c] == target:
         #             _sum += 100 * r + c
-        _sum = sum(100 * r + c for r in range(rows) for c in range(cols) if grid[r][c] == target)
+        _sum = sum(100 * y + x for y in range(rows) for x in range(cols) if grid[y][x] == box)
         return _sum
 
     def resize_grid(self, grid):
