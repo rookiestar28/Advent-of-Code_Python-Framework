@@ -3,33 +3,30 @@ from utils.solution_base import SolutionBase
 
 class Solution(SolutionBase):
     def part1(self, data):
-        grid = [list(row) for row in data]
-        possible_routes = self.find_routes(grid)
+        possible_routes = self.find_routes(data)
         min_score = min(r[1] for r in possible_routes)
         return min_score
 
     def part2(self, data):
-        grid = [list(row) for row in data]
-        possible_routes = self.find_routes(grid)
-
+        possible_routes = self.find_routes(data)
         min_score = min(r[1] for r in possible_routes)
         best_routes = [r for r in possible_routes if r[1] == min_score]
-
         tiles = {tile for route in best_routes for tile in route[0]}
         return len(tiles)
 
-    def find_routes(self, grid):
-        rows, cols = len(grid), len(grid[0])
+    def find_routes(self, data):
+        grid = []
         start = None
         end = None
-        for y in range(rows):
-            for x in range(cols):
-                if grid[y][x] == "S":
+        for y, row in enumerate(data):
+            grid_row = []
+            for x, cell in enumerate(row):
+                grid_row.append(cell)
+                if cell == "S":
                     start = (y, x)
-                elif grid[y][x] == "E":
+                elif cell == "E":
                     end = (y, x)
-            if start and end:
-                break
+            grid.append(grid_row)
 
         dirs = [(0, 1), (-1, 0), (0, -1), (1, 0)]
         routes = []
@@ -43,17 +40,28 @@ class Solution(SolutionBase):
                 routes.append((history, curr_score))
                 continue
 
+            """
+            if you only want to find the minimun score (e.g. part1),
+            you can ignore the tiles where visited[((y, x), curr_dir)] <= curr_score, this will be faster
+
+            however, if you want to find all the possible routes,
+            you need to ignore tiles where visited[((y, x), curr_dir)] < curr_score
+            this will be slower but fits both parts
+            """
             if ((y, x), curr_dir) in visited and visited[((y, x), curr_dir)] < curr_score:
                 continue
 
             visited[((y, x), curr_dir)] = curr_score
 
             for _dir, (dy, dx) in enumerate(dirs):
+                if (curr_dir + 2) % 4 == _dir:
+                    continue
+
                 ny, nx = y + dy, x + dx
-                if 0 <= ny < rows and 0 <= nx < cols and grid[ny][nx] != "#" and (ny, nx) not in history:
+                if grid[ny][nx] != "#" and (ny, nx) not in history:
                     if _dir == curr_dir:
                         queue.append(((ny, nx), history + [(ny, nx)], curr_score + 1, _dir))  # move forward
                     else:
-                        queue.append(((y, x), history + [], curr_score + 1000, _dir))  # turn
+                        queue.append(((y, x), history, curr_score + 1000, _dir))  # turn
 
         return routes
