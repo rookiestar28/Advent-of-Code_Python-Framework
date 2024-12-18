@@ -76,12 +76,15 @@ class Solution(SolutionBase):
             return -1  # no path
 
     def part1(self, data):
-        # self.use_networkx = True
+        self.use_networkx = False
         self.parse_data(data)
         steps = self.get_shortest_path_steps()
         return steps
 
     def part2(self, data):
+        """
+        # this is my original solution, testing every corrupted coord is slow
+
         self.use_networkx = True
         self.parse_data(data)
         for cx, cy in self.corrupted[self.corrupted_length :]:
@@ -89,3 +92,23 @@ class Solution(SolutionBase):
             steps = self.get_shortest_path_steps()
             if steps == -1:
                 return f"{cx},{cy}"
+        """
+
+        # learnt this from reddit, since it has upper and lower bounds, binary search can be really helpful
+        self.use_networkx = False
+        self.parse_data(data)
+
+        start = self.corrupted_length
+        end = len(self.corrupted)
+
+        while end - start > 1:
+            mid = (start + end) // 2
+            self.corrupted_length = mid
+            self.set_grid()
+            steps = self.get_shortest_path_steps()
+            if steps == -1:
+                end = mid
+            else:
+                start = mid
+
+        return f"{self.corrupted[end-1][0]},{self.corrupted[end-1][1]}"
