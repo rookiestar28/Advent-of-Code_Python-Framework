@@ -39,30 +39,19 @@ class Solution(SolutionBase):
 
     def get_valid_count(self, design, towels):
         cache = defaultdict(int)
-        invalid = set()
 
         def matching_towel(pos):
             if pos == len(design):
                 return 1
 
-            if pos in invalid:
-                return 0
-
             if cache[pos] > 0:
                 return cache[pos]
 
             matches = 0
-            is_valid = False
-
             for towel in towels:
                 next_pos = pos + len(towel)
                 if next_pos <= len(design) and design[pos:next_pos] == towel:
-                    is_valid = True
                     matches += matching_towel(next_pos)
-
-            if not is_valid:
-                invalid.add(pos)
-                return 0
 
             cache[pos] = matches
             return matches
