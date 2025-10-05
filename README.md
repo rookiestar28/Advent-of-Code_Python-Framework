@@ -20,7 +20,7 @@ This is a highly automated and scalable solver framework for [Advent of Code (Ao
 
 1. **Clone the Repository**:
     ```bash
-    git clone https://github.com/rookiestar28/Advent-of-Code_Universal-Python-Framework.git
+    git clone https://github.com/rookiestar28/Advent-of-Code_Python-Framework.git
     cd advent-of-code-framework
     ```
 
