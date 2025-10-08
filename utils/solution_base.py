@@ -7,12 +7,13 @@ class SolutionBase:
     def __init__(self, args):
         """
         基礎 Solution 類別的建構函式。
-        - 儲存傳入的 args，並定義所有相關路徑。
+        - 儲存傳入的 args，並定義所有相關路徑（包含年份）。
         """
         self.args = args
         # 使用 pathlib 建立穩健的路徑
         self.base_dir = Path(__file__).resolve().parent.parent
-        self.data_dir = self.base_dir / "data" / f"day{self.args.day:02d}"
+        self.data_dir = self.base_dir / "data" / str(self.args.year) / f"day{self.args.day:02d}"
+        self.solution_file = self.base_dir / "solutions" / str(self.args.year) / f"day{self.args.day:02d}.py"
 
     def _read_file(self, file_path: Path, is_raw: bool = False) -> List[str]:
         """

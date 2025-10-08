@@ -79,14 +79,18 @@ class Files:
     @staticmethod
     def add_day(year: int, day: int) -> None:
         """
-        為指定的日期建立完整的檔案結構，包括解決方案模板和資料檔案。
+        為指定的日期建立完整的檔案結構，現在會包含年份目錄。
         """
         print(f"📁 正在為 {year} Day {day:02d} 建立檔案結構...")
 
+        # --- 修改點：在路徑中加入 year ---
+        year_solutions_dir = SOLUTIONS_DIR / str(year)
+        year_data_dir = DATA_DIR / str(year)
+
         # --- 建立解決方案檔案 ---
         try:
-            SOLUTIONS_DIR.mkdir(exist_ok=True)
-            solution_file = SOLUTIONS_DIR / f"day{day:02d}.py"
+            year_solutions_dir.mkdir(parents=True, exist_ok=True)
+            solution_file = year_solutions_dir / f"day{day:02d}.py"
             if not solution_file.exists():
                 print(f"📄 正在從遠端下載模板檔案...")
                 response = requests.get(TEMPLATE_URL, timeout=10)
@@ -99,7 +103,7 @@ class Files:
 
         # --- 建立資料夾和測試檔案 ---
         try:
-            day_data_dir = DATA_DIR / f"day{day:02d}"
+            day_data_dir = year_data_dir / f"day{day:02d}"
             day_data_dir.mkdir(parents=True, exist_ok=True)
 
             files_to_create = [
@@ -143,13 +147,14 @@ class Files:
             print("ℹ️  謎題輸入檔案已存在，跳過下載。")
 
     @staticmethod
-    def add_test_file(day: int, test_no: int) -> None:
+    def add_test_file(year: int, day: int, test_no: int) -> None: # 新增 year 參數
         """
-        為指定的日期建立額外的測試檔案。
+        為指定的日期建立額外的測試檔案，現在會包含年份目錄。
         """
-        print(f"📝 正在為 Day {day:02d} 新增第 {test_no} 組測試檔案...")
+        print(f"📝 正在為 {year} Day {day:02d} 新增第 {test_no} 組測試檔案...")
         try:
-            day_data_dir = DATA_DIR / f"day{day:02d}"
+            # --- 修改點：在路徑中加入 year ---
+            day_data_dir = DATA_DIR / str(year) / f"day{day:02d}"
             day_data_dir.mkdir(parents=True, exist_ok=True)
 
             files_to_create = [

@@ -45,7 +45,7 @@ def main() -> None:
     elif args.add:
         Files.add_day(args.year, args.day)
     elif args.add_test_file is not None:
-        Files.add_test_file(args.day, args.add_test_file)
+        Files.add_test_file(args.year, args.day, args.add_test_file) 
     elif args.part not in [1, 2]:
         print("❌ 錯誤：部分必須是 1 或 2。", file=sys.stderr)
         exit(1)
@@ -55,7 +55,7 @@ def main() -> None:
             print(f"▶️  正在執行 {args.year} Day {args.day:02d} Part {args.part} 的解答...\n")
             
             # 動態載入對應的解題模組
-            solution_module = importlib.import_module(f"solutions.day{args.day:02d}")
+            solution_module = importlib.import_module(f"solutions.{args.year}.day{args.day:02d}")
             
             # 將整個 args 物件傳遞過去，降低耦合度
             # 假設 Solution 的 __init__ 已修改為 def __init__(self, args):
